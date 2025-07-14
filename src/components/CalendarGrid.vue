@@ -323,8 +323,14 @@ export default {
 					dueDate.isDate = true
 				}
 			}
-			vtodo.deleteAllProperties('DUE') // Clean old one
-			vtodo.updatePropertyWithValue('DUE', dueDate)
+			vtodo.deleteAllProperties('due') // Clean old one
+			vtodo.updatePropertyWithValue('due', dueDate)
+
+			if (vtodo.hasProperty('dtstart') && vtodo.startDate.compare(dueDate) >= 0) {
+				const dtStart = dueDate.clone()
+				vtodo.updatePropertyWithValue('dtstart', dtStart)
+			}
+
 			vtodo.undirtify()
 
 			// 4. Update the calendarobject
