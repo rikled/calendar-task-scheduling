@@ -31,6 +31,11 @@
 					<AppointmentConfigList />
 				</template>
 
+				<!-- Task without End Date List -->
+				<template v-if="isAuthenticatedUser">
+					<UnscheduledTasksList />
+				</template>
+
 				<!-- Trashbin -->
 				<Trashbin v-if="calendarsStore.hasTrashBin" />
 			</template>
@@ -91,6 +96,7 @@ import {
 import '@nextcloud/dialogs/style.css'
 import Trashbin from '../components/AppNavigation/CalendarList/Trashbin.vue'
 import AppointmentConfigList from '../components/AppNavigation/AppointmentConfigList.vue'
+import UnscheduledTasksList from '../components/AppNavigation/UnscheduledTasksList.vue'
 import useFetchedTimeRangesStore from '../store/fetchedTimeRanges.js'
 import useCalendarsStore from '../store/calendars.js'
 import useCalendarObjectsStore from '../store/calendarObjects.js'
@@ -104,6 +110,7 @@ export default {
 	name: 'Calendar',
 	components: {
 		AppointmentConfigList,
+		UnscheduledTasksList,
 		CalendarGrid,
 		EmptyCalendar,
 		EmbedTopNavigation,
