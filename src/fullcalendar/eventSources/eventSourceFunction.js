@@ -89,7 +89,7 @@ export function eventSourceFunction(calendarObjects, calendar, start, end, timez
 				// For tasks, we only want to display when it is due,
 				// not for how long it has been in progress already
 				// if there is no due date, we store the task in the
-				// tasksstore, so user can add it to the calendar if 
+				// tasksstore, so user can add it to the calendar if
 				// he wants
 				if (object.endDate === null) {
 					jsStart = null

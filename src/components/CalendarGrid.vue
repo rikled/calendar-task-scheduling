@@ -55,7 +55,7 @@ import useFetchedTimeRangesStore from '../store/fetchedTimeRanges.js'
 import useWidgetStore from '../store/widget.js'
 import { mapStores, mapState } from 'pinia'
 
-import ICAL from 'ical.js'
+import { DateTimeValue } from '@nextcloud/calendar-js'
 import { getAllObjectsInTimeRange } from '../utils/calendarObject.js'
 
 export default {
@@ -87,8 +87,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapStores(useCalendarsStore, 
-					 useSettingsStore, 
+		...mapStores(useCalendarsStore,
+					 useSettingsStore,
 					 useCalendarObjectsStore,
 					 useFetchedTimeRangesStore),
 		...mapState(useSettingsStore, {
@@ -153,7 +153,7 @@ export default {
 				// Disable jumping in week view and day view when clicking on any event using the simple editor
 				scrollTimeReset: false,
 
-				//dropping Tasks
+				// Dropping Tasks
 				droppable: true,
 				eventReceive: this.handleEventReceive
 			}
@@ -306,19 +306,19 @@ export default {
 		 */
 		async handleEventReceive(info) {
 
-			//1. Get the calenderobject by ID
+			// 1. Get the calenderobject by ID
 			const object = this.calendarObjectsStore.getCalendarObjectById(info.event.extendedProps.objectId)
-			
+
 			// 2. Create the due date
-			info.event.setEnd(info.event.start);
-			const dueDate = ICAL.Time.fromJSDate(info.event.start, false)
+			info.event.setEnd(info.event.start)
+			const dueDate = DateTimeValue.fromJSDate(info.event.start, false)
 
 			// 3. Update the 'DUE' property for the vtodo object
 			const allObjectsInTimeRange = getAllObjectsInTimeRange(object, info.event.start, info.event.start)
-			const vtodo = allObjectsInTimeRange[allObjectsInTimeRange.findIndex(el => el.id === info.event.extendedProps.vobjectId)];
+			const vtodo = allObjectsInTimeRange[allObjectsInTimeRange.findIndex(el => el.id === info.event.extendedProps.vobjectId)]
 
 			// 3.1 Set to Date only value if view is month or year and start date is null or date only value
-			if ((this.$route?.params.view === 'dayGridMonth' ||  this.$route?.params.view === 'multiMonthYear')) {
+			if ((this.$route?.params.view === 'dayGridMonth' || this.$route?.params.view === 'multiMonthYear')) {
 				if (!vtodo.hasProperty('dtstart') || vtodo.startDate.isDate) {
 					dueDate.isDate = true
 				}
@@ -329,7 +329,6 @@ export default {
 
 			// 4. Update the calendarobject
 			await this.calendarObjectsStore.updateCalendarObject({ calendarObject: object, })
-
 
 			// 5. Update the affected calendar
 			const calendar = this.calendarsStore.getCalendarById(info.event.extendedProps.calendarId)

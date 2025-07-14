@@ -4,10 +4,6 @@
 -->
 
 <template>
-	<!--
-	 The appointments feature requires at least one calendar in the vuex store.
-	 Trying to use it before calendars are loaded will result in an error.
-	-->
 	<div v-if="hasAtLeastOneCalendar && tasks.length > 0"
 		class="unscheduled-tasks-list">
 		<AppNavigationCaption class="unscheduled-tasks-list__caption"
@@ -19,7 +15,7 @@
 				<UnscheduledTasksListItem v-for="config in tasks"
 					:key="config.id"
 					:config="config"
-					:color="(calendarsStore.getCalendarById(config.extendedProps.calendarId)).color"/>
+					:color="(calendarsStore.getCalendarById(config.extendedProps.calendarId)).color" />
 			</template>
 		</template>
 	</div>
@@ -30,7 +26,6 @@ import UnscheduledTasksListItem from './UnscheduledTasksList/UnscheduledTasksLis
 import {
 	NcAppNavigationCaption as AppNavigationCaption,
 } from '@nextcloud/vue'
-import { translate as t, translatePlural as n} from '@nextcloud/l10n'
 import useCalendarsStore from '../../store/calendars.js'
 import useTasksStore from '../../store/unscheduledtasks.js'
 import { mapStores } from 'pinia'
