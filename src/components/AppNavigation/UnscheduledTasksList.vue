@@ -6,15 +6,13 @@
 <template>
 	<div v-if="hasAtLeastOneCalendar && tasks.length > 0"
 		class="unscheduled-tasks-list">
-		<AppNavigationCaption class="unscheduled-tasks-list__caption"
-			:name="t('calendar', 'Unscheduled Tasks')">
-		</AppNavigationCaption>
 
 		<template>
 			<template v-if="tasks.length > 0">
 				<UnscheduledTasksListItem v-for="config in tasks"
 					:key="config.id"
 					:config="config"
+					@task-clicked="passTaskClick"
 					:color="(calendarsStore.getCalendarById(config.extendedProps.calendarId)).color" />
 			</template>
 		</template>
@@ -47,6 +45,23 @@ export default {
 		hasAtLeastOneCalendar() {
 			return !!this.calendarsStore.ownSortedCalendars[0]
 		},
+	},
+
+	mounted() {
+		this.$emit('tasks-empty', this.tasks.length === 0)
+	},
+
+
+	watch: {
+		tasks(newTasks) {
+			this.$emit('tasks-empty', newTasks.length === 0)
+		},
+	},
+
+	methods: {
+		passTaskClick(task) {
+			this.$emit('task-clicked', task)
+		}
 	},
 }
 </script>

@@ -31,11 +31,6 @@
 					<AppointmentConfigList />
 				</template>
 
-				<!-- Task without End Date List -->
-				<template v-if="isAuthenticatedUser">
-					<UnscheduledTasksList />
-				</template>
-
 				<!-- Trashbin -->
 				<Trashbin v-if="calendarsStore.hasTrashBin" />
 			</template>
@@ -47,21 +42,59 @@
 		</AppNavigation>
 		<EmbedTopNavigation v-if="isEmbedded" />
 		<AppContent>
-			<CalendarGrid v-if="!showEmptyCalendarScreen"
+			<div class="calendar-wrapper">
+				<div   v-if="isAuthenticatedUser" v-show="tasksmenu" class="app-navigation-toggle-wrapper">
+				
+					<NcActions class="toggle-button">
+						<NcActionButton @click="toggleUnscheduledTasks()">
+							<template #icon>
+								<MenuIcon :size="20" />
+							</template>
+							{{ t('calendar', 'Show unscheduled tasks') }}
+						</NcActionButton>
+					</NcActions>
+				</div>
+
+				<CalendarGrid v-if="!showEmptyCalendarScreen"
+				ref="CalendarGrid"
 				:is-authenticated-user="isAuthenticatedUser" />
-			<EmptyCalendar v-else />
+				<EmptyCalendar v-else />
+
+			</div>
 		</AppContent>
+				
+		<NcAppSidebar v-if="isAuthenticatedUser"
+			v-show="navOpen && tasksmenu"
+			:name="t('calendar', 'Unscheduled tasks')"
+			@close="toggleUnscheduledTasks()">
+			<NcAppSidebarTab name="Settings" id="settings-tab">
+				<!-- Task without End Date List -->
+				<template>
+					<UnscheduledTasksList @tasks-empty="handleTasksEmpty" 
+					@task-clicked="handleTaskClick"/>
+				</template>
+			</NcAppSidebarTab>
+		</NcAppSidebar>
 		<!-- Edit modal -->
 		<router-view />
 	</NcContent>
 </template>
 
 <script>
+
+import MenuIcon from 'vue-material-design-icons/Check.vue'
+
+
+
 // Import vue components
 import {
 	NcAppNavigation as AppNavigation,
 	NcAppContent as AppContent,
 	NcContent,
+	NcAppSidebarTab,
+	NcAppSidebar,
+	NcActionButton,
+	NcActions
 } from '@nextcloud/vue'
 import AppNavigationHeader from '../components/AppNavigation/AppNavigationHeader.vue'
 import CalendarList from '../components/AppNavigation/CalendarList.vue'
@@ -71,6 +104,7 @@ import EmptyCalendar from '../components/EmptyCalendar.vue'
 import CalendarGrid from '../components/CalendarGrid.vue'
 import EditCalendarModal from '../components/AppNavigation/EditCalendarModal.vue'
 import EditSimple from './EditSimple.vue'
+import eventClick from '../fullcalendar/interaction/eventClick.js'
 
 // Import CalDAV related methods
 import {
@@ -123,6 +157,12 @@ export default {
 		Trashbin,
 		EditCalendarModal,
 		EditSimple,
+
+		NcActions,
+		NcActionButton,
+		MenuIcon,
+		NcAppSidebar,
+		NcAppSidebarTab,
 	},
 	props: {
 		// Is the calendar in a widget ?
@@ -152,6 +192,8 @@ export default {
 			backgroundSyncJob: null,
 			timeFrameCacheExpiryJob: null,
 			showEmptyCalendarScreen: false,
+			navOpen: false,
+			tasksmenu: false
 		}
 	},
 	computed: {
@@ -370,10 +412,49 @@ export default {
 			const locale = await loadMomentLocalization()
 			this.settingsStore.setMomentLocale({ locale })
 		},
+
+		toggleUnscheduledTasks() {
+			this.navOpen = !this.navOpen
+		},
+
+		handleTasksEmpty(isEmpty) {
+			if (!isEmpty) {
+				this.tasksmenu = true
+			}
+		},
+
+		handleTaskClick(task) {
+			const grid = this.$refs.CalendarGrid
+			console.log("event clicked", grid.$route, window, task)
+			eventClick(task, grid.$route, window) ({ event: task })
+		}
+
 	},
 }
 </script>
+
 <style lang="scss">
+.app-navigation-toggle-wrapper {
+	position: absolute;
+	top: var(--app-navigation-padding);
+	inset-inline-end: calc(0px - var(--app-navigation-padding));
+	margin-inline-end: calc(-1 * var(--default-clickable-area));
+}
+
+.calendar-wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.toggle-button {
+  position: absolute;
+  top: 2px;
+  right: 50px;
+  z-index: 1000;
+}
+
+
 .calendar-Widget {
 	width: 100%;
 }
