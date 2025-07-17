@@ -325,11 +325,11 @@ Initial settings:
 	- DefaultReminder: ${defaultReminder}
 	- TalkEnabled: ${talkEnabled}
 	- TasksEnabled: ${tasksEnabled}
+	- TasksSidebar: ${tasksSidebar}
 	- Timezone: ${timezone}
 	- HideEventExport: ${hideEventExport}
 	- ForceEventAlarmType: ${forceEventAlarmType}
 	- disableAppointments: ${disableAppointments}
-	- tasksSidebar: ${tasksSidebar}
 	- CanSubscribeLink: ${canSubscribeLink}
 	- attachmentsFolder: ${attachmentsFolder}
 	- ShowResources: ${showResources}
