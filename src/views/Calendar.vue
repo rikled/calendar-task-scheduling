@@ -48,7 +48,7 @@
 					<NcActions class="toggle-button">
 						<NcActionButton @click="toggletasksSidebar()">
 							<template #icon>
-								<MenuIcon :size="20" />
+								<SvgIcon  type="mdi" :path="path"/>
 							</template>
 							{{ t('calendar', 'Show unscheduled tasks') }}
 						</NcActionButton>
@@ -82,8 +82,8 @@
 
 <script>
 
-import MenuIcon from 'vue-material-design-icons/Check.vue'
-
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiPlaylistCheck } from '@mdi/js';
 
 
 // Import vue components
@@ -160,7 +160,7 @@ export default {
 
 		NcActions,
 		NcActionButton,
-		MenuIcon,
+		SvgIcon,
 		NcAppSidebar,
 		NcAppSidebarTab,
 	},
@@ -192,7 +192,8 @@ export default {
 			backgroundSyncJob: null,
 			timeFrameCacheExpiryJob: null,
 			showEmptyCalendarScreen: false,
-			tasksSidebarEnabled: false
+			tasksSidebarEnabled: false,
+			path: mdiPlaylistCheck,
 		}
 	},
 	computed: {
