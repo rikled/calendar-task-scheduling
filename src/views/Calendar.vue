@@ -424,7 +424,6 @@ export default {
 
 		handleTaskClick(task) {
 			const grid = this.$refs.CalendarGrid
-			console.log("event clicked", grid.$route, window, task)
 			eventClick(task, grid.$route, window) ({ event: task })
 		}
 

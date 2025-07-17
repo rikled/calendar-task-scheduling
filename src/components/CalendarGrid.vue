@@ -306,26 +306,33 @@ export default {
 		 */
 		async handleEventReceive(info) {
 
+			const { event } = info;
+			const { objectId, vobjectId, calendarId } = event.extendedProps;
+
 			// 1. Get the calenderobject by ID
-			const object = this.calendarObjectsStore.getCalendarObjectById(info.event.extendedProps.objectId)
+			const calendarObject = this.calendarObjectsStore.getCalendarObjectById(objectId);
 
 			// 2. Create the due date
-			info.event.setEnd(info.event.start)
-			const dueDate = DateTimeValue.fromJSDate(info.event.start, false)
+			event.setEnd(event.start);
+			const dueDate = DateTimeValue.fromJSDate(event.start, false);
 
 			// 3. Update the 'DUE' property for the vtodo object
-			const allObjectsInTimeRange = getAllObjectsInTimeRange(object, info.event.start, info.event.start)
-			const vtodo = allObjectsInTimeRange[allObjectsInTimeRange.findIndex(el => el.id === info.event.extendedProps.vobjectId)]
+			const allObjectsInTimeRange = getAllObjectsInTimeRange(calendarObject, event.start, event.start)
+			const vtodo = allObjectsInTimeRange.find(el => el.id === vobjectId)
 
 			// 3.1 Set to Date only value if view is month or year and start date is null or date only value
-			if ((this.$route?.params.view === 'dayGridMonth' || this.$route?.params.view === 'multiMonthYear')) {
-				if (!vtodo.hasProperty('dtstart') || vtodo.startDate.isDate) {
-					dueDate.isDate = true
-				}
+			const view = this.$route?.params.view;
+			const isDateOnlyView = view === 'dayGridMonth' || view === 'multiMonthYear';
+
+			if (isDateOnlyView && (!vtodo.hasProperty('dtstart') || vtodo.startDate.isDate)) {
+				dueDate.isDate = true
 			}
+
+			// 3.2 Now do the actual update
 			vtodo.deleteAllProperties('due') // Clean old one
 			vtodo.updatePropertyWithValue('due', dueDate)
 
+			// 4. Check if start date is before due date and fix it then
 			if (vtodo.hasProperty('dtstart') && vtodo.startDate.compare(dueDate) >= 0) {
 				const dtStart = dueDate.clone()
 				vtodo.updatePropertyWithValue('dtstart', dtStart)
@@ -333,11 +340,11 @@ export default {
 
 			vtodo.undirtify()
 
-			// 4. Update the calendarobject
-			await this.calendarObjectsStore.updateCalendarObject({ calendarObject: object, })
+			// 5. Update the calendarobject
+			await this.calendarObjectsStore.updateCalendarObject({ calendarObject })
 
-			// 5. Update the affected calendar
-			const calendar = this.calendarsStore.getCalendarById(info.event.extendedProps.calendarId)
+			// 6. Update the affected calendar (maybe unnecessary)
+			const calendar = this.calendarsStore.getCalendarById(calendarId)
 
 			const fetchedTimeRanges = this.fetchedTimeRangesStore
 				.getAllTimeRangesForCalendar(calendar.id)
@@ -351,8 +358,8 @@ export default {
 				})
 			}
 
-			// 6. Remove the event that was created by full calendar
-			info.event.remove()
+			// 7. Remove the event that was created by full calendar
+			event.remove()
 		},
 	},
 }

@@ -4,26 +4,17 @@
 -->
 
 <template>
-	<div v-if="hasAtLeastOneCalendar && tasks.length > 0"
-		class="unscheduled-tasks-list">
-
-		<template>
-			<template v-if="tasks.length > 0">
-				<UnscheduledTasksListItem v-for="config in tasks"
-					:key="config.id"
-					:config="config"
-					@task-clicked="passTaskClick"
-					:color="(calendarsStore.getCalendarById(config.extendedProps.calendarId)).color" />
-			</template>
-		</template>
+	<div class="unscheduled-tasks-list">
+		<UnscheduledTasksListItem v-for="config in tasks"
+			:key="config.id"
+			:config="config"
+			@task-clicked="passTaskClick"
+			:color="(calendarsStore.getCalendarById(config.extendedProps.calendarId)).color" />
 	</div>
 </template>
 
 <script>
 import UnscheduledTasksListItem from './UnscheduledTasksList/UnscheduledTasksListItem.vue'
-import {
-	NcAppNavigationCaption as AppNavigationCaption,
-} from '@nextcloud/vue'
 import useCalendarsStore from '../../store/calendars.js'
 import useTasksStore from '../../store/unscheduledtasks.js'
 import { mapStores } from 'pinia'
@@ -32,7 +23,6 @@ export default {
 	name: 'UnscheduledTasksList',
 	components: {
 		UnscheduledTasksListItem,
-		AppNavigationCaption,
 	},
 
 	computed: {
