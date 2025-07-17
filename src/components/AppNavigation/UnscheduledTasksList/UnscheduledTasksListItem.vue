@@ -5,18 +5,16 @@
 
 <template>
 	<ListItem :id="config.id + '-1'"
-		class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event" 
+		class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event"
 		:data-event="JSON.stringify({ title: config.title })"
 		compact
-		@click="handleClick"
 		style="background-color: transparent !important; border: none !important;"
-		:name="config.title">
+		:name="config.title"
+		@click="handleClick">
 		<template #icon>
-		<div class="icon-wrapper"
-			:style="{ backgroundColor: color, minWidth: '13px', minHeight: '13px', width: '13px', height: '13px',  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', flexShrink: 0 }">
-		</div>
+			<div class="icon-wrapper"
+				:style="{ backgroundColor: color, minWidth: '13px', minHeight: '13px', width: '13px', height: '13px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', flexShrink: 0 }" />
 		</template>
-
 	</ListItem>
 </template>
 
@@ -29,18 +27,9 @@ import { Draggable } from '@fullcalendar/interaction'
 
 export default {
 	name: 'UnscheduledTasksListItem',
-	
+
 	components: {
 		ListItem,
-	},
-
-	mounted() {
-		const containerEl = document.getElementById(this.config.id + '-1')
-		/* eslint-disable no-new */
-		new Draggable(containerEl, {
-			itemSelector: '.fc-event',
-			eventData: this.config,
-		})
 	},
 	props: {
 		config: {
@@ -54,10 +43,19 @@ export default {
 		},
 	},
 
+	mounted() {
+		const containerEl = document.getElementById(this.config.id + '-1')
+		/* eslint-disable no-new */
+		new Draggable(containerEl, {
+			itemSelector: '.fc-event',
+			eventData: this.config,
+		})
+	},
+
 	methods: {
 		handleClick() {
 			this.$emit('task-clicked', this.config)
-		},		
+		},
 	},
 }
 </script>

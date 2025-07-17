@@ -9,7 +9,7 @@ import Vue from 'vue'
 export default defineStore('tasks', {
 	state: () => {
 		return {
-			map: {}
+			map: {},
 		}
 	},
 	getters: {
@@ -21,7 +21,7 @@ export default defineStore('tasks', {
 				  obj[key] = this.map[key]
 				  return obj
 				},
-				{}
+				{},
 			  )
 			for (const calendarId in ordered) {
 				const calendar = calendarsStore.getCalendarById(calendarId)
@@ -83,10 +83,9 @@ export default defineStore('tasks', {
 		emptyCalendar(calendarid) {
 			delete this.map[calendarid]
 		},
-	
 
 		empty() {
 			this.map = {}
-		}
+		},
 	},
 })

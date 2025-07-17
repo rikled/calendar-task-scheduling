@@ -155,7 +155,7 @@ export default {
 
 				// Dropping Tasks
 				droppable: true,
-				eventReceive: this.handleEventReceive
+				eventReceive: this.handleEventReceive,
 			}
 		},
 		eventSources() {
@@ -303,26 +303,27 @@ export default {
 
 		/**
 		 * Add a todo task without end date to the calendar
+		 * @param info
 		 */
 		async handleEventReceive(info) {
 
-			const { event } = info;
-			const { objectId, vobjectId, calendarId } = event.extendedProps;
+			const { event } = info
+			const { objectId, vobjectId, calendarId } = event.extendedProps
 
 			// 1. Get the calenderobject by ID
-			const calendarObject = this.calendarObjectsStore.getCalendarObjectById(objectId);
+			const calendarObject = this.calendarObjectsStore.getCalendarObjectById(objectId)
 
 			// 2. Create the due date
-			event.setEnd(event.start);
-			const dueDate = DateTimeValue.fromJSDate(event.start, false);
+			event.setEnd(event.start)
+			const dueDate = DateTimeValue.fromJSDate(event.start, false)
 
 			// 3. Update the 'DUE' property for the vtodo object
 			const allObjectsInTimeRange = getAllObjectsInTimeRange(calendarObject, event.start, event.start)
 			const vtodo = allObjectsInTimeRange.find(el => el.id === vobjectId)
 
 			// 3.1 Set to Date only value if view is month or year and start date is null or date only value
-			const view = this.$route?.params.view;
-			const isDateOnlyView = view === 'dayGridMonth' || view === 'multiMonthYear';
+			const view = this.$route?.params.view
+			const isDateOnlyView = view === 'dayGridMonth' || view === 'multiMonthYear'
 
 			if (isDateOnlyView && (!vtodo.hasProperty('dtstart') || vtodo.startDate.isDate)) {
 				dueDate.isDate = true

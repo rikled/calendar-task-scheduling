@@ -43,12 +43,11 @@
 		<EmbedTopNavigation v-if="isEmbedded" />
 		<AppContent>
 			<div class="calendar-wrapper">
-				<div   v-if="isAuthenticatedUser" v-show="tasksSidebarEnabled" class="app-navigation-toggle-wrapper">
-				
+				<div v-if="isAuthenticatedUser" v-show="tasksSidebarEnabled" class="app-navigation-toggle-wrapper">
 					<NcActions class="toggle-button">
 						<NcActionButton @click="toggletasksSidebar()">
 							<template #icon>
-								<SvgIcon  type="mdi" :path="path"/>
+								<SvgIcon type="mdi" :path="path" />
 							</template>
 							{{ t('calendar', 'Show unscheduled tasks') }}
 						</NcActionButton>
@@ -56,22 +55,21 @@
 				</div>
 
 				<CalendarGrid v-if="!showEmptyCalendarScreen"
-				ref="CalendarGrid"
-				:is-authenticated-user="isAuthenticatedUser" />
+					ref="CalendarGrid"
+					:is-authenticated-user="isAuthenticatedUser" />
 				<EmptyCalendar v-else />
-
 			</div>
 		</AppContent>
-				
+
 		<NcAppSidebar v-if="isAuthenticatedUser"
 			v-show="tasksSidebar && tasksSidebarEnabled"
 			:name="t('calendar', 'Unscheduled tasks')"
 			@close="toggletasksSidebar()">
-			<NcAppSidebarTab name="Settings" id="settings-tab">
+			<NcAppSidebarTab id="settings-tab" name="Settings">
 				<!-- Task without End Date List -->
 				<template>
-					<UnscheduledTasksList @tasks-empty="handleTasksEmpty" 
-					@task-clicked="handleTaskClick"/>
+					<UnscheduledTasksList @tasks-empty="handleTasksEmpty"
+						@task-clicked="handleTaskClick" />
 				</template>
 			</NcAppSidebarTab>
 		</NcAppSidebar>
@@ -82,9 +80,8 @@
 
 <script>
 
-import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiPlaylistCheck } from '@mdi/js';
-
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiPlaylistCheck } from '@mdi/js'
 
 // Import vue components
 import {
@@ -94,7 +91,7 @@ import {
 	NcAppSidebarTab,
 	NcAppSidebar,
 	NcActionButton,
-	NcActions
+	NcActions,
 } from '@nextcloud/vue'
 import AppNavigationHeader from '../components/AppNavigation/AppNavigationHeader.vue'
 import CalendarList from '../components/AppNavigation/CalendarList.vue'
@@ -425,8 +422,8 @@ export default {
 
 		handleTaskClick(task) {
 			const grid = this.$refs.CalendarGrid
-			eventClick(task, grid.$route, window) ({ event: task })
-		}
+			eventClick(task, grid.$route, window)({ event: task })
+		},
 
 	},
 }
@@ -452,7 +449,6 @@ export default {
   right: 50px;
   z-index: 1000;
 }
-
 
 .calendar-Widget {
 	width: 100%;

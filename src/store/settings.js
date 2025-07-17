@@ -153,7 +153,6 @@ export default defineStore('settings', {
 			tasksStore.empty()
 		},
 
-
 		/**
 		 * Updates the user's setting for visibility of the tasks sidebar for unscheduled tasks
 		 *

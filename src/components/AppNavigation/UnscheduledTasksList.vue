@@ -8,8 +8,8 @@
 		<UnscheduledTasksListItem v-for="config in tasks"
 			:key="config.id"
 			:config="config"
-			@task-clicked="passTaskClick"
-			:color="(calendarsStore.getCalendarById(config.extendedProps.calendarId)).color" />
+			:color="(calendarsStore.getCalendarById(config.extendedProps.calendarId)).color"
+			@task-clicked="passTaskClick" />
 	</div>
 </template>
 
@@ -37,21 +37,20 @@ export default {
 		},
 	},
 
-	mounted() {
-		this.$emit('tasks-empty', this.tasks.length === 0)
-	},
-
-
 	watch: {
 		tasks(newTasks) {
 			this.$emit('tasks-empty', newTasks.length === 0)
 		},
 	},
 
+	mounted() {
+		this.$emit('tasks-empty', this.tasks.length === 0)
+	},
+
 	methods: {
 		passTaskClick(task) {
 			this.$emit('task-clicked', task)
-		}
+		},
 	},
 }
 </script>
