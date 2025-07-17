@@ -43,10 +43,10 @@
 		<EmbedTopNavigation v-if="isEmbedded" />
 		<AppContent>
 			<div class="calendar-wrapper">
-				<div   v-if="isAuthenticatedUser" v-show="tasksmenu" class="app-navigation-toggle-wrapper">
+				<div   v-if="isAuthenticatedUser" v-show="tasksSidebarEnabled" class="app-navigation-toggle-wrapper">
 				
 					<NcActions class="toggle-button">
-						<NcActionButton @click="toggleUnscheduledTasks()">
+						<NcActionButton @click="toggletasksSidebar()">
 							<template #icon>
 								<MenuIcon :size="20" />
 							</template>
@@ -64,9 +64,9 @@
 		</AppContent>
 				
 		<NcAppSidebar v-if="isAuthenticatedUser"
-			v-show="navOpen && tasksmenu"
+			v-show="tasksSidebar && tasksSidebarEnabled"
 			:name="t('calendar', 'Unscheduled tasks')"
-			@close="toggleUnscheduledTasks()">
+			@close="toggletasksSidebar()">
 			<NcAppSidebarTab name="Settings" id="settings-tab">
 				<!-- Task without End Date List -->
 				<template>
@@ -192,8 +192,7 @@ export default {
 			backgroundSyncJob: null,
 			timeFrameCacheExpiryJob: null,
 			showEmptyCalendarScreen: false,
-			navOpen: false,
-			tasksmenu: false
+			tasksSidebarEnabled: false
 		}
 	},
 	computed: {
@@ -211,6 +210,7 @@ export default {
 		...mapState(useSettingsStore, [
 			'timezone',
 			'disableAppointments',
+			'tasksSidebar',
 		]),
 		defaultDate() {
 			return getYYYYMMDDFromFirstdayParam(this.$route?.params?.firstDay ?? 'now')
@@ -335,6 +335,7 @@ export default {
 			attachmentsFolder: loadState('calendar', 'attachments_folder', false),
 			showResources: loadState('calendar', 'show_resources', true),
 			publicCalendars: loadState('calendar', 'publicCalendars', []),
+			tasksSidebar: loadState('calendar', 'tasks_sidebar', true),
 		})
 		this.settingsStore.initializeCalendarJsConfig()
 
@@ -413,14 +414,12 @@ export default {
 			this.settingsStore.setMomentLocale({ locale })
 		},
 
-		toggleUnscheduledTasks() {
-			this.navOpen = !this.navOpen
+		toggletasksSidebar() {
+			this.settingsStore.toggleTasksSidebar()
 		},
 
 		handleTasksEmpty(isEmpty) {
-			if (!isEmpty) {
-				this.tasksmenu = true
-			}
+			this.tasksSidebarEnabled = !isEmpty
 		},
 
 		handleTaskClick(task) {

@@ -26,7 +26,7 @@ import useTasksStore from '../../store/unscheduledtasks.js'
 export function eventSourceFunction(calendarObjects, calendar, start, end, timezone) {
 	const principalsStore = usePrincipalsStore()
 	const tasksStore = useTasksStore()
-	tasksStore.empty(calendar.id)
+	tasksStore.emptyCalendar(calendar.id)
 
 	const fcEvents = []
 	for (const calendarObject of calendarObjects) {

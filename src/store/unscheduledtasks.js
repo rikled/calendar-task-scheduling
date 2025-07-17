@@ -80,8 +80,13 @@ export default defineStore('tasks', {
 			}
 		},
 
-		empty(calendarid) {
+		emptyCalendar(calendarid) {
 			delete this.map[calendarid]
+		},
+	
+
+		empty() {
+			this.map = {}
 		}
 	},
 })
